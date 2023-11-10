@@ -1,4 +1,3 @@
-using System;
 using MultiplayerProtocol;
 using Newtonsoft.Json.Linq;
 using RSG;
@@ -35,7 +34,7 @@ namespace WebsocketMultiplayer.Tests.Server
             if (server) server.Stop();
         }
 
-        public IPromise<ISerializableValue> HandleUserJoin(Guid userId, JObject json)
+        public IPromise<ISerializableValue> HandleUserJoin(IClientConnection connection, JObject json)
         {
             return Promise<ISerializableValue>.Resolved(null);
         }

@@ -21,7 +21,7 @@ namespace WebsocketMultiplayer.Server
                 server.login.api.Authenticate(message.jwt.value).Then(result =>
                 {
                     connection.userId = result.userId;
-                    server.joinHandler.HandleUserJoin(result.userId, result.user).Then(joinResult =>
+                    server.joinHandler.HandleUserJoin(connection, result.user).Then(joinResult =>
                     {
                         var response = new AuthResultMessage(result.jwt, result.userId, joinResult);
                         resolve(response);
