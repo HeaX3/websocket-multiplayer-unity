@@ -1,0 +1,19 @@
+{
+    "name": "WebsocketMultiplayer.Core",
+    "rootNamespace": "WebsocketMultiplayer",
+    "references": [
+        "MultiplayerProtocol",
+        "Essentials",
+        "HttpApi",
+        "RSG.Promise"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

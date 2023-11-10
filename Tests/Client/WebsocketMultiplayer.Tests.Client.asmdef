@@ -1,0 +1,23 @@
+{
+    "name": "WebsocketMultiplayer.Tests.Client",
+    "rootNamespace": "WebsocketMultiplayer.Tests.Client",
+    "references": [
+        "WebsocketMultiplayer.Core",
+        "WebsocketMultiplayer.Client",
+        "Essentials",
+        "RSG.Promise",
+        "HttpApi",
+        "DataStore",
+        "FileStore",
+        "MultiplayerProtocol"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

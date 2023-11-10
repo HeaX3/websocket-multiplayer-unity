@@ -1,0 +1,27 @@
+{
+    "name": "WebsocketMultiplayer.Client",
+    "rootNamespace": "WebsocketMultiplayer.Client",
+    "references": [
+        "Essentials",
+        "ObjectPooling",
+        "MultiplayerProtocol",
+        "RSG.Promise",
+        "endel.nativewebsocket",
+        "DataStore",
+        "FileStore",
+        "WebsocketMultiplayer.Core",
+        "HttpApi"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "LinuxStandalone64",
+        "CloudRendering"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

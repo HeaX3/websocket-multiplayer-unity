@@ -1,0 +1,25 @@
+{
+  "name": "com.heax3.websocket-multiplayer-unity",
+  "version": "1.0.0",
+  "displayName": "WebSocket Multiplayer",
+  "description": "Framework that provides a simple WebSocket multiplayer architecture.",
+  "unity": "2022.3",
+  "unityRelease": "12f1",
+  "documentationUrl": "https://github.com/HeaX3/websocket-multiplayer-unity",
+  "licensesUrl": "https://github.com/HeaX3/websocket-multiplayer-unity",
+  "keywords": [],
+  "author": {
+    "name": "HeaX3",
+    "email": "heax@moonsama.com",
+    "url": "https://www.moonsama.com"
+  },
+  "dependencies": {
+    "com.heax3.unity-essentials": "",
+    "com.heax3.rsg-promise-unity": "",
+    "com.heax3.multiplayer-protocol-unity": "",
+    "com.endel.nativewebsocket": "1.1.4",
+    "com.heax3.data-store": "",
+    "com.heax3.file-store-unity": "",
+    "com.heax3.http-api-unity": ""
+  }
+}
