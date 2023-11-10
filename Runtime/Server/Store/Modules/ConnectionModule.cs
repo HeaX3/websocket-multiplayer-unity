@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using DataStores;
 using MultiplayerProtocol;
 
@@ -19,6 +20,7 @@ namespace WebsocketMultiplayer.Server
         internal abstract void AddConnection(string id, ConnectionBehaviour behaviour);
         internal abstract void RemoveConnection(string id);
         internal abstract void SetUserId(string connectionId, Guid userId);
+        public abstract IReadOnlyList<NetworkConnection> GetConnections();
 
         internal void ReportDisconnected(Guid userId)
         {
@@ -28,9 +30,34 @@ namespace WebsocketMultiplayer.Server
 
     public class ConnectionModule<T> : ConnectionModule where T : NetworkConnection
     {
-        private readonly ConcurrentDictionary<string, ConnectionBehaviour<T>> connections = new();
+        private readonly ConcurrentDictionary<string, ConnectionBehaviour<T>> _connections = new();
         private readonly ConcurrentDictionary<string, Guid> userIdsByConnectionId = new();
         private readonly ConcurrentDictionary<Guid, ConnectionBehaviour<T>> connectionsByUserId = new();
+
+        public IReadOnlyDictionary<Guid, T> connections
+        {
+            get
+            {
+                Dictionary<Guid, T> result;
+                lock (connectionsByUserId)
+                {
+                    result = connectionsByUserId.ToDictionary(e => e.Key, e => e.Value._connection);
+                }
+
+                return result;
+            }
+        }
+
+        public override IReadOnlyList<NetworkConnection> GetConnections()
+        {
+            List<NetworkConnection> result;
+            lock (_connections)
+            {
+                result = _connections.Values.Select(c => c.connection).ToList();
+            }
+
+            return result;
+        }
 
         internal override void AddConnection(string id, ConnectionBehaviour behaviour)
         {
@@ -45,17 +72,17 @@ namespace WebsocketMultiplayer.Server
 
         private void AddConnection(string id, ConnectionBehaviour<T> behaviour)
         {
-            lock (connections)
+            lock (_connections)
             {
-                connections[id] = behaviour;
+                _connections[id] = behaviour;
             }
         }
 
         internal override void RemoveConnection(string id)
         {
-            lock (connections)
+            lock (_connections)
             {
-                connections.TryRemove(id, out var c);
+                _connections.TryRemove(id, out var c);
             }
 
             lock (userIdsByConnectionId)
@@ -73,9 +100,9 @@ namespace WebsocketMultiplayer.Server
         internal override void SetUserId(string connectionId, Guid userId)
         {
             ConnectionBehaviour<T> behaviour;
-            lock (connections)
+            lock (_connections)
             {
-                if (!connections.TryGetValue(connectionId, out behaviour))
+                if (!_connections.TryGetValue(connectionId, out behaviour))
                 {
                     throw new InvalidOperationException("Connection " + connectionId + " not found");
                 }
@@ -105,9 +132,9 @@ namespace WebsocketMultiplayer.Server
 
         internal bool TryGetConnection(string id, out T connection)
         {
-            lock (connections)
+            lock (_connections)
             {
-                if (!connections.TryGetValue(id, out var behaviour))
+                if (!_connections.TryGetValue(id, out var behaviour))
                 {
                     connection = default;
                     return false;
