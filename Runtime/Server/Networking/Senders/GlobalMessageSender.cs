@@ -4,7 +4,7 @@ using MultiplayerProtocol.Senders;
 
 namespace WebsocketMultiplayer.Server.Senders
 {
-    public abstract class GlobalMessageSender : ScopedMessageSender
+    public abstract class GlobalMessageSender : IScopedMessageSender
     {
         protected IMultiplayerServer server { get; }
         
