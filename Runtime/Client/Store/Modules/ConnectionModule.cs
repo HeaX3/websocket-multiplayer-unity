@@ -103,6 +103,13 @@ namespace WebsocketMultiplayer.Client.Modules
                     Debug.Log("[<b>Client</b>] Connection successful, performing protocol handshake");
                     client.connection.PerformProtocolHandshake().Then(() =>
                     {
+                        if (!client.connection.protocol.partnerProtocolReceived)
+                        {
+                            reject(new Exception(
+                                "[<b>Client</b>] Protocol handshake done, but we did not receive the partner protocol"
+                            ));
+                        }
+
                         Debug.Log("[<b>Client</b>] Protocol established, performing authentication");
                         client.connection.auth.Authenticate(userId, secret, authResult =>
                         {
