@@ -92,6 +92,7 @@ namespace WebsocketMultiplayer.Client
                     if (status != Status.Idle)
                     {
                         status = Status.Idle;
+                        websocket = null;
                         connectionInterrupted(code);
                         closed();
                     }
