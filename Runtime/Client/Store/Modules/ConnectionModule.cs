@@ -41,14 +41,14 @@ namespace WebsocketMultiplayer.Client.Modules
         /// <item>Perform authentication handshake</item>
         /// </list>
         /// </summary>
-        public IPromise AuthenticateAndConnect()
+        public IPromise AuthenticateAndConnect(uint maxTimeoutMs = 5000)
         {
             return new Promise((resolve, reject) =>
             {
                 PerformLogin().Then(() =>
                 {
                     client.SetLoadingStatus("Connecting...");
-                    Connect().Then(() =>
+                    Connect(maxTimeoutMs).Then(() =>
                     {
                         client.SetLoadingStatus(null);
                         connected();
@@ -90,7 +90,7 @@ namespace WebsocketMultiplayer.Client.Modules
             });
         }
 
-        private IPromise Connect()
+        private IPromise Connect(uint maxTimeoutMs = 5000)
         {
             var userId = client.store.auth.userId;
             var secret = client.store.auth.secret;
@@ -115,7 +115,7 @@ namespace WebsocketMultiplayer.Client.Modules
                         {
                             client.store.auth.userId = authResult.userId.value;
                             client.store.auth.secret = secret;
-                        }).Then(resolve).Catch(reject);
+                        }, maxTimeoutMs).Then(resolve).Catch(reject);
                     }).Catch(reject);
                 }).Catch(reject);
             });
