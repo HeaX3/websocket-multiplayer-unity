@@ -8,6 +8,7 @@ namespace WebsocketMultiplayer.Server
 {
     public abstract class ConnectionBehaviour : WebSocketBehavior, IServerNetworkEndpoint
     {
+        public event INetworkEndpoint.CloseEvent closed = delegate { };
         public event INetworkEndpoint.MessageEvent received = delegate { };
 
         public delegate void ConnectionOpenEvent(ConnectionBehaviour behaviour);
@@ -16,8 +17,8 @@ namespace WebsocketMultiplayer.Server
 
         public delegate void MessageReceivedEvent(ConnectionBehaviour behaviour, MessageEventArgs e);
 
-        public event ConnectionOpenEvent opened = delegate { };
-        public event ConnectionCloseEvent closed = delegate { };
+        public event ConnectionOpenEvent connectionOpened = delegate { };
+        public event ConnectionCloseEvent connectionClosed = delegate { };
         public event MessageReceivedEvent messageReceived = delegate { };
 
         private readonly IMultiplayerServer _server;
@@ -37,13 +38,14 @@ namespace WebsocketMultiplayer.Server
         protected override void OnOpen()
         {
             base.OnOpen();
-            opened(this);
+            connectionOpened(this);
         }
 
         protected override void OnClose(CloseEventArgs e)
         {
             base.OnClose(e);
-            closed(this, e);
+            connectionClosed(this, e);
+            closed();
         }
 
         protected override void OnError(ErrorEventArgs e)
@@ -73,8 +75,8 @@ namespace WebsocketMultiplayer.Server
             Action<ConnectionBehaviour, CloseEventArgs> closed,
             Action<ConnectionBehaviour, MessageEventArgs> messageReceived)
         {
-            this.opened += opened.Invoke;
-            this.closed += closed.Invoke;
+            this.connectionOpened += opened.Invoke;
+            this.connectionClosed += closed.Invoke;
             this.messageReceived += messageReceived.Invoke;
             return this;
         }

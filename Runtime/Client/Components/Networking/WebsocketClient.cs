@@ -10,12 +10,13 @@ namespace WebsocketMultiplayer.Client
     {
         public delegate void ClosedEvent(WebSocketCloseCode closeCode);
 
+        public event INetworkEndpoint.CloseEvent closed = delegate { };
         public event INetworkEndpoint.MessageEvent received = delegate { };
         public event ClosedEvent connectionInterrupted = delegate { };
 
         private WebSocket websocket;
 
-        bool connectionAttemptDone = false;
+        private bool connectionAttemptDone;
         private Status status;
         private Guid localSessionId;
 
@@ -92,6 +93,7 @@ namespace WebsocketMultiplayer.Client
                     {
                         status = Status.Idle;
                         connectionInterrupted(code);
+                        closed();
                     }
                 };
 
