@@ -21,6 +21,9 @@ namespace WebsocketMultiplayer.Server
 
         private IMultiplayerServer server { get; set; }
 
+        /// <summary>
+        /// IMPORTANT: The generic parameter type of this method must be the same as the generic type of the connection module
+        /// </summary>
         public void Initialize<T>(IMultiplayerServer server, Func<IServerNetworkEndpoint, T> connectionCreator)
             where T : NetworkConnection
         {

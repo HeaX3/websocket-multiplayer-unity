@@ -28,6 +28,9 @@ namespace WebsocketMultiplayer.Server
         }
     }
 
+    /// <summary>
+    /// IMPORTANT: The generic parameter type of this method must be the same as the generic type of the websocket server initializer
+    /// </summary>
     public class ConnectionModule<T> : ConnectionModule where T : NetworkConnection
     {
         private readonly ConcurrentDictionary<string, ConnectionBehaviour<T>> _connections = new();
@@ -63,8 +66,12 @@ namespace WebsocketMultiplayer.Server
         {
             if (behaviour is not ConnectionBehaviour<T> _behaviour)
             {
-                throw new InvalidOperationException("Behaviour has the wrong type! Encountered: " +
-                                                    behaviour.GetType().Name + ", Required: " + typeof(T).Name);
+                throw new InvalidOperationException(
+                    "Behaviour has the wrong connection type! Encountered: " +
+                    behaviour.GetType().GenericTypeArguments.FirstOrDefault()?.Name +
+                    ", Required: " + typeof(T).Name + "\n" +
+                    "Make sure you create this module with the exact same connection type as you return in your " +
+                    "connection creator in the websocket server!");
             }
 
             AddConnection(id, _behaviour);
