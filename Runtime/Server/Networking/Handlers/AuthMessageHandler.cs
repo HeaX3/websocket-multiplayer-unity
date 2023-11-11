@@ -1,5 +1,6 @@
 ﻿using MultiplayerProtocol;
 using RSG;
+using UnityEngine;
 
 namespace WebsocketMultiplayer.Server
 {
@@ -7,19 +8,23 @@ namespace WebsocketMultiplayer.Server
     {
         private IMultiplayerServer server { get; }
         private IClientConnection connection { get; }
+        public bool debug { get; set; }
 
-        public AuthMessageHandler(IMultiplayerServer server, IClientConnection connection)
+        public AuthMessageHandler(IMultiplayerServer server, IClientConnection connection, bool debug = false)
         {
             this.server = server;
             this.connection = connection;
+            this.debug = debug;
         }
 
         public IPromise<IRequestResponse> Handle(AuthMessage message)
         {
             return new Promise<IRequestResponse>((resolve, reject) =>
             {
+                if(debug) Debug.Log("Authenticate with the API");
                 server.login.api.Authenticate(message.jwt.value).Then(result =>
                 {
+                    if(debug) Debug.Log("Authenticated with the API");
                     connection.userId = result.userId;
                     server.joinHandler.HandleUserJoin(connection, result.user).Then(joinResult =>
                     {
@@ -28,6 +33,13 @@ namespace WebsocketMultiplayer.Server
                             preResponse = joinResult?.preResponse,
                             postResponse = joinResult?.postResponse
                         };
+                        if (debug)
+                        {
+                            Debug.Log(
+                                "Pre: "+response.preResponse?.value?.Length+"\n" +
+                                "Post: "+response.postResponse?.value?.Length
+                            );
+                        }
                         resolve(response);
                     }).Catch(reject);
                 }).Catch(e =>
