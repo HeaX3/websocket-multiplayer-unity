@@ -34,9 +34,9 @@ namespace WebsocketMultiplayer.Tests.Server
             if (server) server.Stop();
         }
 
-        public IPromise<ISerializableValue> HandleUserJoin(IClientConnection connection, JObject json)
+        public IPromise<ResponseContextMessages> HandleUserJoin(IClientConnection connection, JObject json)
         {
-            return Promise<ISerializableValue>.Resolved(null);
+            return Promise<ResponseContextMessages>.Resolved(null);
         }
     }
 }

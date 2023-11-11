@@ -23,7 +23,11 @@ namespace WebsocketMultiplayer.Server
                     connection.userId = result.userId;
                     server.joinHandler.HandleUserJoin(connection, result.user).Then(joinResult =>
                     {
-                        var response = new AuthResultMessage(result.jwt, result.userId, joinResult);
+                        var response = new RequestResponse(new AuthResultValue(result.jwt, result.userId))
+                        {
+                            preResponse = joinResult?.preResponse,
+                            postResponse = joinResult?.postResponse
+                        };
                         resolve(response);
                     }).Catch(reject);
                 }).Catch(e =>

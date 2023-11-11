@@ -13,13 +13,13 @@ namespace WebsocketMultiplayer.Server
         /// </summary>
         /// <param name="connection">Connection</param>
         /// <param name="json">User JSON provided by the login API</param>
-        /// <returns>Serializable data which will be sent to the client. Use this to initialize the client application state.</returns>
-        IPromise<ISerializableValue> HandleUserJoin(IClientConnection connection, [CanBeNull] JObject json);
+        /// <returns>Use this to initialize the client application state.</returns>
+        [ItemCanBeNull] IPromise<ResponseContextMessages> HandleUserJoin(IClientConnection connection, [CanBeNull] JObject json);
     }
 
     public interface IUserJoinHandler<in T> : IUserJoinHandler where T : IClientConnection
     {
-        IPromise<ISerializableValue> IUserJoinHandler.HandleUserJoin(IClientConnection connection, JObject json)
+        [ItemCanBeNull] IPromise<ResponseContextMessages> IUserJoinHandler.HandleUserJoin(IClientConnection connection, JObject json)
         {
             if (connection is not T t)
             {
@@ -34,7 +34,7 @@ namespace WebsocketMultiplayer.Server
         /// </summary>
         /// <param name="connection">Connection</param>
         /// <param name="json">User JSON provided by the login API</param>
-        /// <returns>Serializable data which will be sent to the client. Use this to initialize the client application state.</returns>
-        IPromise<ISerializableValue> HandleUserJoin(T connection, [CanBeNull] JObject json);
+        /// <returns>Use this to initialize the client application state.</returns>
+        [ItemCanBeNull] IPromise<ResponseContextMessages> HandleUserJoin(T connection, [CanBeNull] JObject json);
     }
 }

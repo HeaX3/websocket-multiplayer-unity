@@ -11,7 +11,7 @@ namespace WebsocketMultiplayer.Client.Senders
         {
         }
 
-        public IPromise Authenticate(Guid userId, string secret, Action<AuthResultMessage> resultHandler,
+        public IPromise Authenticate(Guid userId, string secret, Action<AuthResultValue> resultHandler,
             uint timeoutMs = 5000)
         {
             return connection.SendRequest(new AuthMessage(userId, secret), resultHandler, timeoutMs);

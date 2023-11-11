@@ -5,21 +5,19 @@ using MultiplayerProtocol;
 
 namespace WebsocketMultiplayer
 {
-    public class AuthResultMessage : INetworkMessage
+    public class AuthResultValue : INetworkMessage
     {
         public StringValue jwt { get; } = new();
         public GuidValue userId { get; } = new();
-        public ByteArrayValue extra { get; } = new();
 
-        public AuthResultMessage()
+        public AuthResultValue()
         {
         }
 
-        public AuthResultMessage(string jwt, Guid userId, [CanBeNull] ISerializableValue extra = null)
+        public AuthResultValue(string jwt, Guid userId)
         {
             this.jwt.value = jwt;
             this.userId.value = userId;
-            this.extra.value = extra?.Serialize().ToArray();
         }
 
         public IEnumerable<ISerializableValue> values
@@ -28,7 +26,6 @@ namespace WebsocketMultiplayer
             {
                 yield return jwt;
                 yield return userId;
-                yield return extra;
             }
         }
     }
