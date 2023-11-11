@@ -48,56 +48,11 @@ namespace WebsocketMultiplayer.Client.Modules
                 PerformLogin().Then(() =>
                 {
                     client.SetLoadingStatus("Connecting...");
-                    var secret = client.store.auth.secret;
-                    Connect().Then(joinResult =>
+                    Connect().Then(() =>
                     {
-                        client.store.auth.userId = joinResult.userId.value;
-                        client.store.auth.secret = secret;
-
                         client.SetLoadingStatus(null);
                         connected();
                         resolve();
-                    }).Catch(e =>
-                    {
-                        client.SetLoadingStatus(null);
-                        if (e is ForbiddenException) client.store.auth.Reset();
-                        reject(e);
-                    });
-                }).Catch(reject);
-            });
-        }
-
-        /// <summary>
-        /// <list type="number">
-        /// <item>Try to read credentials from the local storage</item>
-        /// <item>Perform OAuth flow if no credentials are present</item>
-        /// <item>Connect to the server</item>
-        /// <item>Perform authentication handshake</item>
-        /// <item>Return response message of type <see cref="T"/></item>
-        /// </list>
-        /// </summary>
-        /// <typeparam name="T">Response message type</typeparam>
-        /// <returns>Initial application state provided by the server after successfully authenticating the user</returns>
-        public IPromise<T> AuthenticateAndConnect<T>() where T : ISerializableValue, new()
-        {
-            return new Promise<T>((resolve, reject) =>
-            {
-                PerformLogin().Then(() =>
-                {
-                    client.SetLoadingStatus("Connecting...");
-                    var secret = client.store.auth.secret;
-                    Connect().Then(joinResult =>
-                    {
-                        client.store.auth.userId = joinResult.userId.value;
-                        client.store.auth.secret = secret;
-
-                        var extra = new T();
-                        extra.DeserializeFrom(
-                            new SerializedData(joinResult.extra.value ?? Array.Empty<byte>())
-                        );
-                        client.SetLoadingStatus(null);
-                        connected();
-                        resolve(extra);
                     }).Catch(e =>
                     {
                         client.SetLoadingStatus(null);
@@ -135,18 +90,13 @@ namespace WebsocketMultiplayer.Client.Modules
             });
         }
 
-        private IPromise<AuthResultMessage> Connect()
+        private IPromise Connect()
         {
             var userId = client.store.auth.userId;
             var secret = client.store.auth.secret;
             client.store.auth.userId = default;
             client.store.auth.secret = default;
-            return Connect(userId, secret);
-        }
-
-        private IPromise<AuthResultMessage> Connect(Guid userId, string token)
-        {
-            return new Promise<AuthResultMessage>((resolve, reject) =>
+            return new Promise((resolve, reject) =>
             {
                 client.client.Connect(client.serverAddress).Then(() =>
                 {
@@ -154,7 +104,11 @@ namespace WebsocketMultiplayer.Client.Modules
                     client.connection.PerformProtocolHandshake().Then(() =>
                     {
                         Debug.Log("[<b>Client</b>] Protocol established, performing authentication");
-                        client.connection.auth.Authenticate(userId, token).Then(resolve).Catch(reject);
+                        client.connection.auth.Authenticate(userId, secret, authResult =>
+                        {
+                            client.store.auth.userId = authResult.userId.value;
+                            client.store.auth.secret = secret;
+                        }).Then(resolve).Catch(reject);
                     }).Catch(reject);
                 }).Catch(reject);
             });
