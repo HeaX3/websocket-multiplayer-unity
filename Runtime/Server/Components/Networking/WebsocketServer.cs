@@ -64,7 +64,7 @@ namespace WebsocketMultiplayer.Server
 
         private void OnMessageReceived(ConnectionBehaviour connection, MessageEventArgs message)
         {
-            var serializedMessage = new SerializedMessage(message.RawData);
+            var serializedMessage = new SerializedData(message.RawData);
             var messageId = serializedMessage.ReadUShort(moveReadPos: false);
             if (connection.connection.protocol.IsThreadSafeMessage(messageId))
             {
@@ -160,6 +160,6 @@ namespace WebsocketMultiplayer.Server
     public struct ReceivedMessageContainer
     {
         public ConnectionBehaviour Behaviour;
-        public SerializedMessage Message;
+        public SerializedData Message;
     }
 }

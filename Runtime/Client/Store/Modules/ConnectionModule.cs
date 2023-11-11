@@ -93,7 +93,7 @@ namespace WebsocketMultiplayer.Client.Modules
 
                         var extra = new T();
                         extra.DeserializeFrom(
-                            new SerializedMessage(joinResult.extra.value ?? Array.Empty<byte>())
+                            new SerializedData(joinResult.extra.value ?? Array.Empty<byte>())
                         );
                         client.SetLoadingStatus(null);
                         connected();

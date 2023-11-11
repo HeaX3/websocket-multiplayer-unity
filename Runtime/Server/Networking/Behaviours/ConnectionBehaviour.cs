@@ -60,12 +60,12 @@ namespace WebsocketMultiplayer.Server
             messageReceived(this, e);
         }
 
-        internal void Receive(SerializedMessage message)
+        internal void Receive(SerializedData message)
         {
             received(message);
         }
 
-        void INetworkEndpoint.Send(SerializedMessage message)
+        void INetworkEndpoint.Send(SerializedData message)
         {
             var data = message.ToArray();
             Send(data);

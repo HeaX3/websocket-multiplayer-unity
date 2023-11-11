@@ -101,7 +101,7 @@ namespace WebsocketMultiplayer.Client
                 {
                     try
                     {
-                        received(new SerializedMessage(bytes));
+                        received(new SerializedData(bytes));
                     }
                     catch (Exception e)
                     {
@@ -130,7 +130,7 @@ namespace WebsocketMultiplayer.Client
             Disconnect();
         }
 
-        public void Send(SerializedMessage message)
+        public void Send(SerializedData message)
         {
             if (websocket == null || status != Status.Connected)
             {
