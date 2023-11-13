@@ -9,7 +9,7 @@ namespace WebsocketMultiplayer.Client.Modules
     public class AuthModule : IDataModule
     {
         private IMultiplayerClient client { get; }
-        
+
         private const string file = "login.json";
 
         public delegate void StringEvent(string value);
@@ -24,7 +24,7 @@ namespace WebsocketMultiplayer.Client.Modules
             get => _secret;
             set => ApplySecret(value);
         }
-        
+
         public AuthModule(IMultiplayerClient client)
         {
             this.client = client;
@@ -32,7 +32,6 @@ namespace WebsocketMultiplayer.Client.Modules
 
         public void Initialize()
         {
-            
         }
 
         public void Reset()
@@ -56,7 +55,9 @@ namespace WebsocketMultiplayer.Client.Modules
 
         public void SaveCredentials()
         {
-            var json = new JObject().Set("userId", userId).Set("secret", secret);
+            var json = userId != default && !string.IsNullOrWhiteSpace(secret)
+                ? new JObject().Set("userId", userId).Set("secret", secret)
+                : new JObject();
             try
             {
                 client.files.WriteEncrypted(file, json);

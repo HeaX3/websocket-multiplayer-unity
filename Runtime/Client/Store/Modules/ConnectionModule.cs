@@ -18,10 +18,12 @@ namespace WebsocketMultiplayer.Client.Modules
         public event WebsocketConnectionEvent websocketDisconnected = delegate { };
 
         private IMultiplayerClient client { get; }
+        private readonly bool debug;
 
-        public ConnectionModule(IMultiplayerClient client)
+        public ConnectionModule(IMultiplayerClient client, bool debug = false)
         {
             this.client = client;
+            this.debug = debug;
         }
 
         public void Initialize()
@@ -56,7 +58,13 @@ namespace WebsocketMultiplayer.Client.Modules
                     }).Catch(e =>
                     {
                         client.SetLoadingStatus(null);
+                        if (debug)
+                        {
+                            Debug.LogError("Connection failed:");
+                            Debug.LogError(e);
+                        }
                         if (e is ForbiddenException) client.store.auth.Reset();
+
                         reject(e);
                     });
                 }).Catch(reject);
