@@ -65,9 +65,14 @@ namespace WebsocketMultiplayer.Client.Modules
                         }
                         if (e is ForbiddenException) client.store.auth.Reset();
 
+                        Disconnect();
                         reject(e);
                     });
-                }).Catch(reject);
+                }).Catch(e =>
+                {
+                    Disconnect();
+                    reject(e);
+                });
             });
         }
 
