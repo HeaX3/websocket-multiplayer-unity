@@ -143,16 +143,13 @@ namespace WebsocketMultiplayer.Client
             message.Dispose();
         }
 
-        public void Disconnect()
+        public async void Disconnect()
         {
-            if (status != Status.Idle && status != Status.ConnectionFailed)
-            {
-                if (websocket.State != WebSocketState.Closed) websocket.Close();
-            }
-
+            var websocket = this.websocket;
             status = Status.Idle;
-            websocket = null;
             localSessionId = default;
+            this.websocket = null;
+            if (websocket != null) await websocket.Close();
         }
 
         public static WebsocketClient CreateInstance()
