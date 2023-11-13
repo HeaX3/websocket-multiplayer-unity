@@ -81,7 +81,7 @@ namespace WebsocketMultiplayer.Client.Modules
             return new Promise((resolve, reject) =>
             {
                 client.store.auth.FetchCredentials();
-                if (client.store.auth.userId != null)
+                if (client.store.auth.userId != default)
                 {
                     resolve();
                     return;
