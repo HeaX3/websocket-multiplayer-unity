@@ -145,12 +145,12 @@ namespace WebsocketMultiplayer.Client
 
         public void Disconnect()
         {
-            status = Status.Idle;
             if (status != Status.Idle && status != Status.ConnectionFailed)
             {
                 if (websocket.State != WebSocketState.Closed) websocket.Close();
             }
 
+            status = Status.Idle;
             websocket = null;
             localSessionId = default;
         }
