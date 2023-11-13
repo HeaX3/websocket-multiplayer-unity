@@ -21,10 +21,10 @@ namespace WebsocketMultiplayer.Server
         {
             return new Promise<IRequestResponse>((resolve, reject) =>
             {
-                if(debug) Debug.Log("Authenticate with the API");
+                if (debug) Debug.Log("Authenticate with the API");
                 server.login.api.Authenticate(message.jwt.value).Then(result =>
                 {
-                    if(debug) Debug.Log("Authenticated with the API");
+                    if (debug) Debug.Log("Authenticated with the API");
                     connection.userId = result.userId;
                     server.joinHandler.HandleUserJoin(connection, result.user).Then(joinResult =>
                     {
@@ -36,14 +36,30 @@ namespace WebsocketMultiplayer.Server
                         if (debug)
                         {
                             Debug.Log(
-                                "Pre: "+response.preResponse?.value?.Length+"\n" +
-                                "Post: "+response.postResponse?.value?.Length
+                                "Pre: " + response.preResponse?.value?.Length + "\n" +
+                                "Post: " + response.postResponse?.value?.Length
                             );
                         }
+
                         resolve(response);
-                    }).Catch(reject);
+                    }).Catch(e =>
+                    {
+                        if (debug)
+                        {
+                            Debug.LogError("API Authentication failed:");
+                            Debug.LogError(e);
+                        }
+
+                        reject(e);
+                    });
                 }).Catch(e =>
                 {
+                    if (debug)
+                    {
+                        Debug.LogError("API Authentication failed:");
+                        Debug.LogError(e);
+                    }
+
                     if (e is AuthenticationException ||
                         (e.Message?.StartsWith("401: HTTP/1.1 401 Unauthorized") ?? false))
                     {
