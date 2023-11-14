@@ -17,7 +17,7 @@ namespace WebsocketMultiplayer.Tests.Server.Handlers
         {
             var user = new User(Guid.NewGuid())
             {
-                name = "HeaX"
+                name = null
             };
             return new RequestResponse
             {

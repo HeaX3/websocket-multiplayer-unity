@@ -1,6 +1,5 @@
 ﻿using System;
 using MultiplayerProtocol;
-using UnityEngine;
 
 namespace WebsocketMultiplayer.Tests.Models
 {

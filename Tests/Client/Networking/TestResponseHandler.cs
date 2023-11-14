@@ -7,7 +7,7 @@ namespace WebsocketMultiplayer.Tests.Client
     {
         public void Handle(ResponseTestMessage message)
         {
-            Debug.Log(message.user.name + " (" + message.user.id + ")");
+            Debug.Log((message.user.name ?? "<null>") + " (" + message.user.id + ")");
         }
     }
 }

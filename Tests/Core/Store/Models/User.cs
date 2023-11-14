@@ -6,10 +6,10 @@ namespace WebsocketMultiplayer.Tests.Models
     public class User : ISerializableValue
     {
         public Guid id;
-        public string name = "";
-        public bool admin = false;
-        public bool demo = false;
-        public string language = "en";
+        public string name;
+        public bool admin;
+        public bool demo;
+        public string language;
 
         public User()
         {
