@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using MultiplayerProtocol;
 
 namespace WebsocketMultiplayer
 {
     public class AuthResultValue : INetworkMessage
     {
-        public StringValue jwt { get; } = new();
-        public GuidValue userId { get; } = new();
+        public string jwt { get; private set; }
+        public Guid userId { get; private set; }
 
         public AuthResultValue()
         {
@@ -16,17 +14,20 @@ namespace WebsocketMultiplayer
 
         public AuthResultValue(string jwt, Guid userId)
         {
-            this.jwt.value = jwt;
-            this.userId.value = userId;
+            this.jwt = jwt;
+            this.userId = userId;
         }
 
-        public IEnumerable<ISerializableValue> values
+        public void SerializeInto(SerializedData message)
         {
-            get
-            {
-                yield return jwt;
-                yield return userId;
-            }
+            message.Write(jwt);
+            message.Write(userId);
+        }
+
+        public void DeserializeFrom(SerializedData message)
+        {
+            jwt = message.ReadString();
+            userId = message.ReadGuid();
         }
     }
 }

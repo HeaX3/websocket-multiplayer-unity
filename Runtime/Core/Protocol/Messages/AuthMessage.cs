@@ -1,29 +1,31 @@
 using System;
-using System.Collections.Generic;
 using MultiplayerProtocol;
 
 namespace WebsocketMultiplayer
 {
     public class AuthMessage : INetworkMessage
     {
-        public GuidValue userId { get; } = new();
-        public StringValue jwt { get; } = new();
+        public Guid userId { get; private set; }
+        public string jwt { get; private set; }
         
         public AuthMessage(){}
 
         public AuthMessage(Guid userId, string secret)
         {
-            this.userId.value = userId;
-            this.jwt.value = secret;
+            this.userId = userId;
+            jwt = secret;
         }
 
-        public IEnumerable<ISerializableValue> values
+        public void SerializeInto(SerializedData message)
         {
-            get
-            {
-                yield return userId;
-                yield return jwt;
-            }
+            message.Write(userId);
+            message.Write(jwt);
+        }
+
+        public void DeserializeFrom(SerializedData message)
+        {
+            userId = message.ReadGuid();
+            jwt = message.ReadString();
         }
     }
 }

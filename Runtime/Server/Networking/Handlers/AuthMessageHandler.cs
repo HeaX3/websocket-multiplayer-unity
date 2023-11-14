@@ -22,7 +22,7 @@ namespace WebsocketMultiplayer.Server
             return new Promise<IRequestResponse>((resolve, reject) =>
             {
                 if (debug) Debug.Log("Authenticate with the API");
-                server.login.api.Authenticate(message.jwt.value).Then(result =>
+                server.login.api.Authenticate(message.jwt).Then(result =>
                 {
                     if (debug) Debug.Log("Authenticated with the API");
                     connection.userId = result.userId;

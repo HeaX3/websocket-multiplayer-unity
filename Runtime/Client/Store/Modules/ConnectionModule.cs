@@ -126,7 +126,7 @@ namespace WebsocketMultiplayer.Client.Modules
                         Debug.Log("[<b>Client</b>] Protocol established, performing authentication");
                         client.connection.auth.Authenticate(userId, secret, authResult =>
                         {
-                            client.store.auth.userId = authResult.userId.value;
+                            client.store.auth.userId = authResult.userId;
                             client.store.auth.secret = secret;
                         }, maxTimeoutMs).Then(resolve).Catch(reject);
                     }).Catch(reject);
