@@ -6,12 +6,7 @@ namespace WebsocketMultiplayer.Tests.Server
 {
     public class TestServerStore : DataStore, IMultiplayerStore
     {
-        public ConnectionModule connection { get; }
-
-        public TestServerStore()
-        {
-            connection = new ConnectionModule<ClientConnection>();
-        }
+        public ConnectionModule connection { get; } = new ConnectionModule<TestServerConnection>();
 
         protected override IEnumerable<IDataModule> modules
         {

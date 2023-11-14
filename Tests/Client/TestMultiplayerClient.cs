@@ -13,7 +13,8 @@ namespace WebsocketMultiplayer.Tests.Client
         public WebsocketClient client { get; private set; }
         public IMultiplayerStore store { get; private set; }
         public IFileStorage files { get; } = new MemoryStorage();
-        public IMultiplayerConnection connection { get; private set; }
+        public TestClientConnection connection { get; private set; }
+        IMultiplayerConnection IMultiplayerClient.connection => connection;
         public ILoginClient login => this;
         public ILoginApi api { get; }
         public string platform => "test";
@@ -34,12 +35,20 @@ namespace WebsocketMultiplayer.Tests.Client
         {
             client = WebsocketClient.CreateInstance();
             store = MultiplayerStore.Create(this);
-            connection = new ClientConnection(client);
+            connection = new TestClientConnection(client);
             store.connection.AuthenticateAndConnect().Then(() =>
             {
-                Debug.Log("<b>[Client]</b> Test successful! Disconnecting...");
-                store.connection.Disconnect();
-                Debug.Log("<b>[Client]</b> Connection test completed.");
+                connection.SendTestRequest().Then(() =>
+                {
+                    Debug.Log("[<b>Client</b>] Test successful! Disconnecting...");
+                    store.connection.Disconnect();
+                    Debug.Log("[<b>Client</b>] Connection test completed.");
+                }).Catch(e =>
+                {
+                    store.connection.Disconnect();
+                    Debug.LogError("[<b>Client</b>] Sending a test request failed!");
+                    Debug.LogError(e);
+                });
             }).Catch(Debug.LogError);
         }
 

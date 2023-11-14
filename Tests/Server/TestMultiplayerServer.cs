@@ -26,7 +26,7 @@ namespace WebsocketMultiplayer.Tests.Server
         public void Start()
         {
             server = WebsocketServer.CreateInstance();
-            server.Initialize(this, endpoint => new ClientConnection(endpoint));
+            server.Initialize(this, endpoint => new TestServerConnection(endpoint));
         }
 
         public void Stop()

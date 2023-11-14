@@ -1,15 +1,17 @@
 {
-    "name": "WebsocketMultiplayer.Tests.Client",
-    "rootNamespace": "WebsocketMultiplayer.Tests.Client",
+    "name": "WebsocketMultiplayer.Tests",
+    "rootNamespace": "WebsocketMultiplayer.Tests",
     "references": [
         "WebsocketMultiplayer.Core",
         "WebsocketMultiplayer.Client",
+        "WebsocketMultiplayer.Server",
         "WebsocketMultiplayer.Tests.Core",
+        "WebsocketMultiplayer.Tests.Client",
+        "WebsocketMultiplayer.Tests.Server",
         "Essentials",
         "RSG.Promise",
-        "HttpApi",
         "DataStore",
-        "FileStore",
+        "HttpApi",
         "MultiplayerProtocol"
     ],
     "includePlatforms": [],

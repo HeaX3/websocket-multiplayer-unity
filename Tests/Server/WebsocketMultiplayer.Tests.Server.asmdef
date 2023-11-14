@@ -4,6 +4,7 @@
     "references": [
         "WebsocketMultiplayer.Core",
         "WebsocketMultiplayer.Server",
+        "WebsocketMultiplayer.Tests.Core",
         "MultiplayerProtocol",
         "Essentials",
         "RSG.Promise",
