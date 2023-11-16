@@ -1,4 +1,5 @@
-﻿using MultiplayerProtocol;
+﻿using System;
+using MultiplayerProtocol;
 using RSG;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace WebsocketMultiplayer.Server
             return new Promise<IRequestResponse>((resolve, reject) =>
             {
                 if (debug) Debug.Log("Authenticate with the API");
-                server.login.api.Authenticate(message.jwt).Then(result =>
+                Authenticate(message.userId, message.jwt).Then(result =>
                 {
                     if (debug) Debug.Log("Authenticated with the API");
                     connection.userId = result.userId;
@@ -70,6 +71,23 @@ namespace WebsocketMultiplayer.Server
                     reject(e);
                 });
             });
+        }
+
+        private IPromise<AuthenticationResultDto> Authenticate(Guid userId, string secret)
+        {
+            if (server.login.api is IJwtAuthHandler jwtAuthHandler)
+            {
+                return jwtAuthHandler.Authenticate(secret);
+            }
+
+            if (server.login.api is ITokenAuthHandler tokenAuthHandler)
+            {
+                return tokenAuthHandler.Authenticate(userId, secret);
+            }
+
+            throw new NotImplementedException(
+                "Your Login API must implement either IJwtAuthHandler or ITokenAuthHandler"
+            );
         }
     }
 }

@@ -6,6 +6,5 @@ namespace WebsocketMultiplayer
     {
         public IPromise<OAuth> StartOAuth(string client);
         public IPromise<OAuthPing> PingOAuth(string key);
-        public IPromise<AuthenticationResultDto> Authenticate(string jwt);
     }
 }
