@@ -45,7 +45,7 @@ namespace WebsocketMultiplayer.Server
                         resolve(response);
                     }).Catch(e =>
                     {
-                        if (debug)
+                        if (debug || e is not AuthenticationException)
                         {
                             Debug.LogError("API Authentication failed:");
                             Debug.LogError(e);
@@ -55,7 +55,7 @@ namespace WebsocketMultiplayer.Server
                     });
                 }).Catch(e =>
                 {
-                    if (debug)
+                    if (debug || e is not AuthenticationException)
                     {
                         Debug.LogError("API Authentication failed:");
                         Debug.LogError(e);
