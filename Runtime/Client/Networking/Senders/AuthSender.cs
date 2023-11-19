@@ -1,7 +1,6 @@
 ﻿using System;
 using MultiplayerProtocol;
 using MultiplayerProtocol.Senders;
-using RSG;
 
 namespace WebsocketMultiplayer.Client.Senders
 {
@@ -11,10 +10,9 @@ namespace WebsocketMultiplayer.Client.Senders
         {
         }
 
-        public IPromise Authenticate(Guid userId, string secret, Action<AuthResultValue> resultHandler,
-            uint timeoutMs = 5000)
+        public RequestPromise<AuthResultValue> Authenticate(Guid userId, string secret, uint timeoutMs = 5000)
         {
-            return connection.SendRequest(new AuthMessage(userId, secret), resultHandler, timeoutMs);
+            return connection.SendRequest<AuthResultValue>(new AuthMessage(userId, secret), timeoutMs);
         }
     }
 }

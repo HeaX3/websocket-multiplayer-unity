@@ -63,6 +63,7 @@ namespace WebsocketMultiplayer.Client.Modules
                             Debug.LogError("Connection failed:");
                             Debug.LogError(e);
                         }
+
                         if (e is ForbiddenException) client.store.auth.Reset();
 
                         Disconnect();
@@ -124,11 +125,14 @@ namespace WebsocketMultiplayer.Client.Modules
                         }
 
                         Debug.Log("[<b>Client</b>] Protocol established, performing authentication");
-                        client.connection.auth.Authenticate(userId, secret, authResult =>
-                        {
-                            client.store.auth.userId = authResult.userId;
-                            client.store.auth.secret = secret;
-                        }, maxTimeoutMs).Then(resolve).Catch(reject);
+                        client.connection.auth.Authenticate(userId, secret, maxTimeoutMs)
+                            .ThenAccept(authResult =>
+                            {
+                                client.store.auth.userId = authResult.userId;
+                                client.store.auth.secret = secret;
+                            })
+                            .Then(resolve)
+                            .Catch(reject);
                     }).Catch(reject);
                 }).Catch(reject);
             });
