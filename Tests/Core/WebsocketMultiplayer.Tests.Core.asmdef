@@ -7,7 +7,9 @@
         "WebsocketMultiplayer.Core",
         "RSG.Promise"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
