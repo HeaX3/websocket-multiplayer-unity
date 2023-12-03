@@ -149,7 +149,15 @@ namespace WebsocketMultiplayer.Client
             status = Status.Idle;
             localSessionId = default;
             this.websocket = null;
-            if (websocket != null) await websocket.Close();
+            try
+            {
+                if (websocket != null) await websocket.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+
             closed();
         }
 
