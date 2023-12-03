@@ -19,6 +19,19 @@ namespace WebsocketMultiplayer.Client.Modules
 
         private IMultiplayerClient client { get; }
         private readonly bool debug;
+        private bool _isConnected;
+
+        public bool isConnected
+        {
+            get => _isConnected;
+            private set
+            {
+                if (_isConnected == value) return;
+                _isConnected = value;
+                if (value) connected();
+                else disconnected();
+            }
+        }
 
         public ConnectionModule(IMultiplayerClient client, bool debug = false)
         {
@@ -28,9 +41,10 @@ namespace WebsocketMultiplayer.Client.Modules
 
         public void Initialize()
         {
+            client.client.closed += () => isConnected = false;
             client.client.connectionInterrupted += reason =>
             {
-                disconnected();
+                isConnected = false;
                 websocketDisconnected(reason);
             };
         }
@@ -53,7 +67,7 @@ namespace WebsocketMultiplayer.Client.Modules
                     Connect(maxTimeoutMs).Then(() =>
                     {
                         client.SetLoadingStatus(null);
-                        connected();
+                        isConnected = true;
                         resolve();
                     }).Catch(e =>
                     {
