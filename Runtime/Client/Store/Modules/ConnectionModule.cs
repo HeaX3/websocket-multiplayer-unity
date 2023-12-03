@@ -28,8 +28,15 @@ namespace WebsocketMultiplayer.Client.Modules
             {
                 if (_isConnected == value) return;
                 _isConnected = value;
-                if (value) connected();
-                else disconnected();
+                try
+                {
+                    if (value) connected();
+                    else disconnected();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
             }
         }
 
