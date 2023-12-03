@@ -150,6 +150,7 @@ namespace WebsocketMultiplayer.Client
             localSessionId = default;
             this.websocket = null;
             if (websocket != null) await websocket.Close();
+            closed();
         }
 
         public static WebsocketClient CreateInstance()
