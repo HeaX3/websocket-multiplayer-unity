@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Threading;
 using MultiplayerProtocol;
 using UnityEngine;
 using WebSocketSharp;
@@ -21,7 +23,10 @@ namespace WebsocketMultiplayer.Server
         public event ConnectionCloseEvent connectionClosed = delegate { };
         public event MessageReceivedEvent messageReceived = delegate { };
 
+        private readonly ConcurrentQueue<PendingMessage> sendQueue = new();
+
         private readonly IMultiplayerServer _server;
+        private bool _sending;
 
         public abstract NetworkConnection connection { get; }
 
@@ -38,12 +43,14 @@ namespace WebsocketMultiplayer.Server
         protected override void OnOpen()
         {
             base.OnOpen();
+            StartSending();
             connectionOpened(this);
         }
 
         protected override void OnClose(CloseEventArgs e)
         {
             base.OnClose(e);
+            StopSending();
             connectionClosed(this, e);
             closed();
         }
@@ -65,10 +72,34 @@ namespace WebsocketMultiplayer.Server
             received(message);
         }
 
-        void INetworkEndpoint.Send(SerializedData message)
+        private void StartSending()
         {
-            var data = message.ToArray();
-            Send(data);
+            _sending = true;
+            sendQueue.Clear();
+            var sendThread = new Thread(() =>
+            {
+                while (_sending)
+                {
+                    while (sendQueue.TryDequeue(out var message))
+                    {
+                        if (message.expiration != default && DateTime.UtcNow > message.expiration) continue;
+                        Send(message.data.ToArray());
+                    }
+
+                    Thread.Sleep(10);
+                }
+            });
+            sendThread.Start();
+        }
+
+        private void StopSending()
+        {
+            _sending = false;
+        }
+
+        void INetworkEndpoint.Send(SerializedData message, DateTime expiration)
+        {
+            sendQueue.Enqueue(new PendingMessage(message, expiration));
         }
 
         public ConnectionBehaviour RegisterHandlers(Action<ConnectionBehaviour> opened,
@@ -90,6 +121,18 @@ namespace WebsocketMultiplayer.Server
         public ConnectionBehaviour(IMultiplayerServer server, Func<IServerNetworkEndpoint, T> connection) : base(server)
         {
             _connection = connection(this);
+        }
+    }
+
+    readonly struct PendingMessage
+    {
+        public readonly SerializedData data;
+        public readonly DateTime expiration;
+
+        public PendingMessage(SerializedData data, DateTime expiration)
+        {
+            this.data = data;
+            this.expiration = expiration;
         }
     }
 }

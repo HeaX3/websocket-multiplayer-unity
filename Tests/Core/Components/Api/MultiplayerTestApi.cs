@@ -4,7 +4,7 @@ using RSG;
 
 namespace WebsocketMultiplayer.Tests
 {
-    public class MultiplayerTestApi : ILoginApi
+    public class MultiplayerTestApi : ILoginApi, IJwtAuthHandler
     {
         private readonly Guid userId = Guid.NewGuid();
 

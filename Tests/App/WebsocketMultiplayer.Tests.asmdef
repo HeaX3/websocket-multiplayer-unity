@@ -15,7 +15,8 @@
         "MultiplayerProtocol"
     ],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "WindowsStandalone32"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

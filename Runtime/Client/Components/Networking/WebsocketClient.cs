@@ -131,7 +131,9 @@ namespace WebsocketMultiplayer.Client
             Disconnect();
         }
 
-        public void Send(SerializedData message)
+        public void Send(SerializedData message) => ((INetworkEndpoint)this).Send(message, default);
+
+        void INetworkEndpoint.Send(SerializedData message, DateTime expiration)
         {
             if (websocket == null || status != Status.Connected)
             {
