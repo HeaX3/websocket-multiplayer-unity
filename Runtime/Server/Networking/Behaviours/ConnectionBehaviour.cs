@@ -83,7 +83,7 @@ namespace WebsocketMultiplayer.Server
                     while (sendQueue.TryDequeue(out var message))
                     {
                         if (message.expiration != default && DateTime.UtcNow > message.expiration) continue;
-                        Send(message.data.ToArray());
+                        Send(message.data);
                     }
 
                     Thread.Sleep(10);
@@ -99,7 +99,7 @@ namespace WebsocketMultiplayer.Server
 
         void INetworkEndpoint.Send(SerializedData message, DateTime expiration)
         {
-            sendQueue.Enqueue(new PendingMessage(message, expiration));
+            sendQueue.Enqueue(new PendingMessage(message.ToArray(), expiration));
         }
 
         public ConnectionBehaviour RegisterHandlers(Action<ConnectionBehaviour> opened,
@@ -126,10 +126,10 @@ namespace WebsocketMultiplayer.Server
 
     readonly struct PendingMessage
     {
-        public readonly SerializedData data;
+        public readonly byte[] data;
         public readonly DateTime expiration;
 
-        public PendingMessage(SerializedData data, DateTime expiration)
+        public PendingMessage(byte[] data, DateTime expiration)
         {
             this.data = data;
             this.expiration = expiration;
