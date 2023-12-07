@@ -158,8 +158,9 @@ namespace WebsocketMultiplayer.Server
             receivedMessagesTick.Clear();
             if (_messagesHandledTime >= 5)
             {
-                _messagesHandledTime = 0;
                 if (debug) Debug.Log("Messages handled in the last 5s: " + messagesHandled);
+                messagesHandled = 0;
+                _messagesHandledTime = 0;
             }
         }
 
