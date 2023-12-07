@@ -21,6 +21,7 @@ namespace WebsocketMultiplayer.Client
         private Guid localSessionId;
 
         public bool isConnected => websocket is { State: WebSocketState.Open };
+        public bool isOpen => isConnected;
 
         private void OnDisable()
         {
