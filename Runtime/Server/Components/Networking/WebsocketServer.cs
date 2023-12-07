@@ -21,6 +21,11 @@ namespace WebsocketMultiplayer.Server
 
         private IMultiplayerServer server { get; set; }
 
+        private int messagesHandled = 0;
+        private float _messagesHandledTime = 0;
+
+        public bool debug { get; set; }
+
         /// <summary>
         /// IMPORTANT: The generic parameter type of this method must be the same as the generic type of the connection module
         /// </summary>
@@ -135,12 +140,14 @@ namespace WebsocketMultiplayer.Server
                 server.store.connection.ReportDisconnected(userId);
             }
 
+            _messagesHandledTime += Time.deltaTime;
             receivedMessagesTick.Clear();
 
             // 2. Handle new messages
             while (receivedMessages.TryDequeue(out var action))
             {
                 receivedMessagesTick.Add(action);
+                messagesHandled++;
             }
 
             foreach (var action in receivedMessagesTick.Where(action => action.Behaviour.isAlive))
@@ -149,6 +156,11 @@ namespace WebsocketMultiplayer.Server
             }
 
             receivedMessagesTick.Clear();
+            if (_messagesHandledTime >= 5)
+            {
+                _messagesHandledTime = 0;
+                if (debug) Debug.Log("Messages handled in the last 5s: " + messagesHandled);
+            }
         }
 
         public static WebsocketServer CreateInstance()
