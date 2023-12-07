@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using MultiplayerProtocol;
 using UnityEngine;
 using WebSocketSharp;
+using Debug = UnityEngine.Debug;
 
 namespace WebsocketMultiplayer.Server
 {
@@ -25,6 +27,7 @@ namespace WebsocketMultiplayer.Server
         private float _messagesHandledTime = 0;
 
         public bool debug { get; set; }
+        private Stopwatch stopwatch = new Stopwatch();
 
         /// <summary>
         /// IMPORTANT: The generic parameter type of this method must be the same as the generic type of the connection module
@@ -150,9 +153,28 @@ namespace WebsocketMultiplayer.Server
                 messagesHandled++;
             }
 
-            foreach (var action in receivedMessagesTick.Where(action => action.Behaviour.isAlive))
+            if (debug)
             {
-                action.Behaviour.Receive(action.Message);
+                foreach (var action in receivedMessagesTick.Where(action => action.Behaviour.isAlive))
+                {
+                    var messageId = action.Message.ReadUShort(false);
+                    stopwatch.Reset();
+                    stopwatch.Start();
+                    action.Behaviour.Receive(action.Message);
+                    var time = stopwatch.ElapsedMilliseconds;
+                    stopwatch.Stop();
+                    if (action.Behaviour.connection.protocol.TryGetMessageType(messageId, out var type))
+                    {
+                        Debug.Log(type + ": " + time + "ms");
+                    }
+                }
+            }
+            else
+            {
+                foreach (var action in receivedMessagesTick.Where(action => action.Behaviour.isAlive))
+                {
+                    action.Behaviour.Receive(action.Message);
+                }
             }
 
             receivedMessagesTick.Clear();
