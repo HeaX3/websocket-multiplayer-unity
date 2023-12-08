@@ -106,7 +106,11 @@ namespace WebsocketMultiplayer.Server
             {
                 if (webSocketConnections.TryRemove(behaviour.ID, out var connection))
                 {
-                    if (connection.IsAlive) connection.Close(CloseStatusCode.Away, "Client web socket stopping");
+                    if (connection.ReadyState == WebSocketState.Open)
+                    {
+                        connection.Close(CloseStatusCode.Away, "Client web socket stopping");
+                    }
+
                     Debug.Log(
                         $"Web Socket Closed {behaviour.ID} disconnected - CloseEventArgs {closeEventArgs.Code} {closeEventArgs.Reason}");
                 }
@@ -133,7 +137,7 @@ namespace WebsocketMultiplayer.Server
         void Update()
         {
             stopwatch.Restart();
-            
+
             // 1. Report disconnected users
             disconnectedUserIdsTick.Clear();
             while (disconnectedUserIds.TryDequeue(out var userId))

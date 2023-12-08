@@ -30,7 +30,7 @@ namespace WebsocketMultiplayer.Server
 
         public abstract NetworkConnection connection { get; }
 
-        public bool isAlive => Context.WebSocket.IsAlive;
+        public bool isAlive => Context.WebSocket.ReadyState == WebSocketState.Open;
         public bool isOpen => isAlive;
 
         IMultiplayerServer IServerNetworkEndpoint.server => _server;
