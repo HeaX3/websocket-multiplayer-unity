@@ -20,9 +20,9 @@ namespace WebsocketMultiplayer.Tests.Client
         public string platform => "test";
         public ILoginHandler authentication { get; } = new DummyLoginHandler();
 
-        public IPromise<KeyValuePair<Guid, string>> PromptLogin(ILoginHandler login)
+        public IPromise<KeyValuePair<Guid, string>> PromptLogin(ILoginHandler login, OAuth oauth)
         {
-            return login.PerformLogin(this);
+            return login.PerformLogin(this, oauth);
         }
 
         public TestMultiplayerClient(ILoginApi loginApi, string address, int port)

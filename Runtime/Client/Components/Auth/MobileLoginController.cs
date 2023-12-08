@@ -25,7 +25,7 @@ namespace WebsocketMultiplayer.Client
             DontDestroyOnLoad(_instance);
         }
 
-        public override IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client)
+        public override IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client, OAuth auth)
         {
             // TODO Do some kind of mobile specific wizardry to control the login flow in an in-app browser
             throw new NotImplementedException();

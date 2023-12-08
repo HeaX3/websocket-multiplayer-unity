@@ -29,7 +29,7 @@ namespace WebsocketMultiplayer.Client
             DontDestroyOnLoad(_instance);
         }
 
-        public override IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client)
+        public override IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client, OAuth auth)
         {
             return new Promise<KeyValuePair<Guid, string>>((resolve, reject) =>
             {
@@ -39,11 +39,8 @@ namespace WebsocketMultiplayer.Client
                     return;
                 }
 
-                client.api.StartOAuth(client.platform).Then(oauth =>
-                {
-                    if (!string.IsNullOrWhiteSpace(oauth.url)) Application.OpenURL(oauth.url);
-                    StartCoroutine(PingRoutine(client, oauth.key, resolve, reject));
-                }).Catch(reject);
+                if (!string.IsNullOrWhiteSpace(auth.url)) Application.OpenURL(auth.url);
+                StartCoroutine(PingRoutine(client, auth.key, resolve, reject));
             });
         }
 

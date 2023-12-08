@@ -7,13 +7,13 @@ namespace WebsocketMultiplayer.Tests.Client
 {
     public class DummyLoginHandler : ILoginHandler
     {
-        public IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client)
+        public IPromise<KeyValuePair<Guid, string>> PerformLogin(ILoginClient client, OAuth _)
         {
             return new Promise<KeyValuePair<Guid, string>>((resolve, reject) =>
             {
-                client.api.PingOAuth(client.platform).Then(oauth =>
+                client.api.PingOAuth(client.platform).Then(result =>
                 {
-                    resolve(new KeyValuePair<Guid, string>(oauth.userId, oauth.jwt));
+                    resolve(new KeyValuePair<Guid, string>(result.userId, result.jwt));
                 }).Catch(reject);
             });
         }
