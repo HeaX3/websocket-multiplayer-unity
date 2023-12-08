@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using RSG;
 using UnityEngine;
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
 
 namespace WebsocketMultiplayer.Client
 {
