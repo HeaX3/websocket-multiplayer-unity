@@ -39,7 +39,10 @@ namespace WebsocketMultiplayer.Client
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(auth.url)) Application.OpenURL(auth.url);
+                if (!string.IsNullOrWhiteSpace(auth.url))
+                {
+                    OpenURL(auth.url);
+                }
                 StartCoroutine(PingRoutine(client, auth.key, resolve, reject));
             });
         }
