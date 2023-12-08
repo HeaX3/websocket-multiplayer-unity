@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MultiplayerProtocol;
 using RSG;
+using UnityEngine;
 
 namespace WebsocketMultiplayer.Tests.Client
 {
@@ -19,11 +21,35 @@ namespace WebsocketMultiplayer.Tests.Client
             }
         }
 
-        public IPromise SendTestRequest()
+        public IPromise SendTestRequests()
         {
-            return new Promise((resolve, reject) =>
+            var requests = new List<Func<IPromise>>();
+            var success = 0;
+            var fail = 0;
+            for (var i = 0; i < 100; i++)
             {
-                SendRequest(new RequestTestMessage()).Then(resolve).Catch(reject);
+                var index = i;
+                requests.Add(() =>
+                {
+                    return new Promise((resolve, reject) =>
+                    {
+                        SendRequest(new RequestSpamTestResultMessage()).ThenSuccess(() =>
+                        {
+                            Debug.Log(index + " success");
+                            success++;
+                        }).Then(resolve).Catch(e =>
+                        {
+                            Debug.LogError(index + " error:");
+                            Debug.LogError(e);
+                            fail++;
+                            reject(e);
+                        });
+                    });
+                });
+            }
+            return Promise.Sequence(requests).Then(() =>
+            {
+                Debug.Log("Success: " + success + ", Fail: " + fail);
             });
         }
     }

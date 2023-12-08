@@ -38,7 +38,7 @@ namespace WebsocketMultiplayer.Tests.Client
             connection = new TestClientConnection(client);
             store.connection.AuthenticateAndConnect().Then(() =>
             {
-                connection.SendTestRequest().Then(() =>
+                connection.SendTestRequests().Then(() =>
                 {
                     Debug.Log("[<b>Client</b>] Test successful! Disconnecting...");
                     store.connection.Disconnect();

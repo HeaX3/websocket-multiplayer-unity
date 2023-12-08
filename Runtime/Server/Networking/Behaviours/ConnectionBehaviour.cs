@@ -64,7 +64,6 @@ namespace WebsocketMultiplayer.Server
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            base.OnMessage(e);
             messageReceived(this, e);
         }
 
@@ -103,7 +102,7 @@ namespace WebsocketMultiplayer.Server
             sendQueue.Enqueue(new PendingMessage(message.ToArray(), expiration));
         }
 
-        public ConnectionBehaviour RegisterHandlers(Action<ConnectionBehaviour> opened,
+        internal ConnectionBehaviour RegisterHandlers(Action<ConnectionBehaviour> opened,
             Action<ConnectionBehaviour, CloseEventArgs> closed,
             Action<ConnectionBehaviour, MessageEventArgs> messageReceived)
         {

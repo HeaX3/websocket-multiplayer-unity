@@ -16,6 +16,8 @@ namespace WebsocketMultiplayer.Tests
             var port = 8083;
             var dummyApi = new MultiplayerTestApi();
 
+            Application.targetFrameRate = 30;
+
             server = new TestMultiplayerServer(dummyApi, address, port);
             server.Start();
 

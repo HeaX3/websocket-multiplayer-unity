@@ -17,6 +17,7 @@ namespace WebsocketMultiplayer.Tests.Server
             {
                 foreach (var h in base.handlers) yield return h;
                 yield return new TestRequestHandler(this);
+                yield return new RequestSpamTestHandler();
             }
         }
     }

@@ -27,7 +27,8 @@ namespace WebsocketMultiplayer.Server
         private float _messagesHandledTime = 0;
 
         public bool debug { get; set; }
-        private Stopwatch stopwatch = new Stopwatch();
+        private readonly Stopwatch stopwatch = new();
+        private readonly Stopwatch messageStopwatch = new();
 
         /// <summary>
         /// IMPORTANT: The generic parameter type of this method must be the same as the generic type of the connection module
@@ -131,7 +132,10 @@ namespace WebsocketMultiplayer.Server
         // Update is called once per frame
         void Update()
         {
+            stopwatch.Restart();
+            
             // 1. Report disconnected users
+            disconnectedUserIdsTick.Clear();
             while (disconnectedUserIds.TryDequeue(out var userId))
             {
                 disconnectedUserIdsTick.Add(userId);
@@ -149,23 +153,24 @@ namespace WebsocketMultiplayer.Server
             while (receivedMessages.TryDequeue(out var action))
             {
                 receivedMessagesTick.Add(action);
-                messagesHandled++;
             }
+
+            if (debug) Debug.Log("Preparation time: " + stopwatch.ElapsedMilliseconds + "ms");
 
             if (debug)
             {
                 foreach (var action in receivedMessagesTick.Where(action => action.Behaviour.isAlive))
                 {
                     var messageId = action.Message.ReadUShort(false);
-                    stopwatch.Reset();
-                    stopwatch.Start();
+                    messageStopwatch.Restart();
                     action.Behaviour.Receive(action.Message);
-                    var time = stopwatch.ElapsedMilliseconds;
-                    stopwatch.Stop();
+                    var time = messageStopwatch.ElapsedMilliseconds;
                     if (action.Behaviour.connection.protocol.TryGetMessageType(messageId, out var type))
                     {
                         Debug.Log(type + ": " + time + "ms");
                     }
+
+                    messagesHandled++;
                 }
             }
             else
@@ -176,6 +181,8 @@ namespace WebsocketMultiplayer.Server
                 }
             }
 
+            if (debug) Debug.Log("Handling time: " + stopwatch.ElapsedMilliseconds + "ms");
+
             receivedMessagesTick.Clear();
             if (_messagesHandledTime >= 5)
             {
@@ -183,6 +190,8 @@ namespace WebsocketMultiplayer.Server
                 messagesHandled = 0;
                 _messagesHandledTime = 0;
             }
+
+            if (debug) Debug.Log("Full tick time: " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         public static WebsocketServer CreateInstance()
