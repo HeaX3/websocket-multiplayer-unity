@@ -56,16 +56,15 @@ namespace WebsocketMultiplayer.Server
                 Debug.Log("[<b>Server</b>] Multiplayer Server started");
             });
 
-            // if (Equals(ip, System.Net.IPAddress.Any))
-            // {
-            //     ThreadPool.QueueUserWorkItem(_ =>
-            //     {
-            //         var tcpListener =
-            //             new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, 8085);
-            //         tcpListener.Start();
-            //         Console.WriteLine($"TcpListener has started on {tcpListener.LocalEndpoint}");
-            //     });
-            // }
+            if (Equals(ip, System.Net.IPAddress.Any))
+            {
+                ThreadPool.QueueUserWorkItem(_ =>
+                {
+                    var tcpListener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, 8085);
+                    tcpListener.Start();
+                    Console.WriteLine($"TcpListener has started on {tcpListener.LocalEndpoint}");
+                });
+            }
         }
 
         public void Stop()
