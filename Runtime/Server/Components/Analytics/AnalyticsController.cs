@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WebsocketMultiplayer.Server.Analytics
 {
     public class AnalyticsController : MonoBehaviour
     {
-        private const int FramerateIntervalSeconds = 10;
-
         private AnalyticsModule module { get; set; }
 
         private float _time;
-        private readonly List<int> _pastSeconds = new();
         private int _frames;
 
         private AnalyticsController Initialize(AnalyticsModule module)
@@ -26,9 +20,7 @@ namespace WebsocketMultiplayer.Server.Analytics
             _time += Time.deltaTime;
             _frames++;
             if (_time < 1) return;
-            _pastSeconds.Add(_frames);
-            while (_pastSeconds.Count > FramerateIntervalSeconds) _pastSeconds.RemoveAt(0);
-            module.Publish((float)_pastSeconds.Average());
+            module.Publish(_frames);
             _time = 0;
             _frames = 0;
         }
