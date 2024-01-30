@@ -11,7 +11,7 @@ namespace WebsocketMultiplayer.Server
         private IClientConnection connection { get; }
         public bool debug { get; set; }
 
-        public uint maxTimeoutMs => 30;
+        public uint maxTimeoutMs => 30000;
 
         public AuthMessageHandler(IMultiplayerServer server, IClientConnection connection, bool debug = false)
         {
