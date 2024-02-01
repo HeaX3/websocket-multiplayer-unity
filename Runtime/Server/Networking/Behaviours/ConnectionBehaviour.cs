@@ -83,7 +83,14 @@ namespace WebsocketMultiplayer.Server
                     while (sendQueue.TryDequeue(out var message))
                     {
                         if (message.expiration != default && DateTime.UtcNow > message.expiration) continue;
-                        Send(message.data);
+                        try
+                        {
+                            Send(message.data);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError(e);
+                        }
                     }
 
                     Thread.Sleep(10);
